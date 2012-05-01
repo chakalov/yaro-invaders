@@ -18,7 +18,9 @@ class BaseShip(pygame.sprite.Sprite):
 		self.health = maxHealth
 		self.maxHealth = maxHealth
 		self.lives = lives
+		self.isKilled = False
 		
+		self.initPosition = location
 		self.position = location
 		self.moveSpeed = moveSpeed
 		self.stunned = False
@@ -32,9 +34,9 @@ class BaseShip(pygame.sprite.Sprite):
 		self.position = (self.position[0] + rel[0], self.position[1] + rel[1])
 		self.isOutOfScreen()
 	
-	def randomMove(self, moving_interval):
+	def intervalMove(self, offset):
 		self.position = (self.position[0] + self.moveSpeed, self.position[1])
-		if moving_interval[0] > self.position[0] or self.position[0] >= moving_interval[1]:
+		if self.initPosition[0] - offset > self.position[0] or self.position[0] >= self.initPosition[0] + offset:
 			self.moveSpeed = self.moveSpeed * (-1)
 	
 	def takeDamage(self, damage):
@@ -69,6 +71,7 @@ class BaseShip(pygame.sprite.Sprite):
 	def kill(self):
 		self.lives -= 1
 		if self.lives <= 0:
+			self.isKilled = True
 			pygame.sprite.Sprite.kill(self)
 		else:
 			self.health = self.maxHealth

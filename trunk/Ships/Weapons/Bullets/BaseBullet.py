@@ -26,8 +26,8 @@ class BaseBullet(pygame.sprite.Sprite):
 	def checkCollision(self, targets):
 		for target in targets:
 			if self.rect.colliderect(target):
-				self.hitTarget(target)
-				return True
+				if self.hitTarget(target):
+					return target
 	
 	def hitTarget(self, target):
 		target.takeDamage(self.damage)
