@@ -121,7 +121,7 @@ class Invaders:
 		print(self.playerWins)
 	
 	def quit(self):
-		sys.exit()
+		self.running = False
 
 if __name__ == "__main__":
 	Invaders().run()
