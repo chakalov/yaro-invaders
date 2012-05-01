@@ -1,12 +1,17 @@
 import sys, pygame
 from Player import Player
-from Wave import Wave
+from Levels import Levels
 
 class Invaders:
 	def __init__(self):
 		pygame.init()
 		self.setUpDisplay()
 		self.setUpSprites()
+		self.setUpLevels()
+		self.setUpPlayers()
+		self.controls = [{"controller": "mouse", "shoot": 1}]
+		self.buttonsPressed = {"mouse": {1: False}, "keyboard": {}}
+		self.playerWins = False
 	
 	def setUpDisplay(self, width = 1024, height = 768):
 		pygame.mouse.set_visible(False)
@@ -23,18 +28,14 @@ class Invaders:
 		self.allEnemies = pygame.sprite.Group()
 		self.allFriendlyBullets = pygame.sprite.Group()
 		self.allEnemyBullets = pygame.sprite.Group()
-		
-		self.player = Player(pygame.mouse.get_pos())
-		self.allSprites.add(self.player.ship)
-		self.allPlayers.add(self.player.ship)
-		
-		self.wave = Wave([
-						(112, 100), (212, 100), (312, 100), (412, 100), (512, 100), (612, 100), (712, 100), (812, 100), (912, 100),
-						(112, 200), (212, 200), (312, 200), (412, 200), (512, 200), (612, 200), (712, 200), (812, 200), (912, 200),
-						(112, 300), (212, 300), (312, 300), (412, 300), (512, 300), (612, 300), (712, 300), (812, 300), (912, 300)
-						], 100)
-		self.allSprites.add(self.wave.ships)
-		self.allEnemies.add(self.wave.ships)
+	
+	def setUpLevels(self):
+		self.levels = Levels(self.allEnemies)
+	
+	def setUpPlayers(self):
+		self.players = [Player((500, 600))] # Single Player for now
+		self.allPlayers.add(self.players[0].ship)
+		self.allSprites.add(self.players[0].ship)
 	
 	def drawBackground(self):
 		img_rect = self.bg_img.get_rect()
@@ -55,50 +56,69 @@ class Invaders:
 				img_rect.topleft = (x * img_rect.width, y * img_rect.height + self.offset)
 				self.screen.blit(self.bg_img, img_rect)
 	
-	def run(self):
-		left_button_pressed = False
-		while True:
-			time_passed = self.clock.tick(50)
-			
-			for event in pygame.event.get():
-				if event.type == pygame.QUIT:
-					self.quit()
-				elif event.type == pygame.MOUSEMOTION:
-					self.player.move(pygame.mouse.get_rel())
-				elif event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
-					left_button_pressed = True
-				elif event.type == pygame.MOUSEBUTTONUP and event.button == 1:
-					left_button_pressed = False
+	def UserEvents(self):
+		for event in pygame.event.get():
+			if event.type == pygame.QUIT:
+				self.quit()
+			else:
+				if event.type == pygame.MOUSEMOTION:
+					self.players[0].move(pygame.mouse.get_rel()) # TODO: move it outside
+				elif event.type == pygame.MOUSEBUTTONDOWN:
+					self.buttonsPressed["mouse"][event.button] = True
+				elif event.type == pygame.MOUSEBUTTONUP:
+					self.buttonsPressed["mouse"][event.button] = False
 				elif event.type == pygame.KEYDOWN:
 					if event.key == pygame.K_ESCAPE:
 						self.quit()
-				
-			if left_button_pressed:
-				bullet = self.player.shoot()
-				if not bullet is None:
-					self.allSprites.add(bullet)
-					self.allFriendlyBullets.add(bullet)
+		
+		if self.buttonsPressed["mouse"][self.controls[0]["shoot"]]:
+			bullet = self.players[0].shoot()
+			if not bullet is None:
+				self.allSprites.add(bullet)
+				self.allFriendlyBullets.add(bullet)
+	
+	def AIEvents(self):
+		self.levels.runPattern()
+		for enemy in self.allEnemies:
+			for player in self.allPlayers:
+				if enemy.position[0] >= player.position[0] - 8 and enemy.position[0] <= player.position[0] + 8:
+					bullet = enemy.randomShoot()
+					if not bullet is None:
+						self.allSprites.add(bullet)
+						self.allEnemyBullets.add(bullet)
+	
+	def GameEvents(self):
+		# level checks
+		if self.levels.isFinished():
+			hasNextLevel = self.levels.nextLevel()
+			if hasNextLevel == False:
+				self.running = False
+				self.playerWins = True
+			else:
+				self.allSprites.add(self.allEnemies)
+		
+		# update sprites and check for collisions
+		self.allSprites.update()
+		for bullet in self.allFriendlyBullets:
+			bullet.checkCollision(self.allEnemies)
+		for bullet in self.allEnemyBullets:
+			bullet.checkCollision([self.players[0].ship])
+	
+	def run(self):
+		self.running = True
+		while self.running:
+			time_passed = self.clock.tick(50)
 			
+			# check if events occured and process them
+			self.UserEvents()
+			self.AIEvents()
+			self.GameEvents()
+			
+			# draw
 			self.drawBackground()
-			self.allSprites.update()
-			
-			for bullet in self.allFriendlyBullets:
-				bullet.checkCollision(self.allEnemies)
-			
-			for bullet in self.allEnemyBullets:
-				bullet.checkCollision([self.player.ship])
-			
-			self.wave.runPattern()
-			for enemy in self.allEnemies:
-				for player in self.allPlayers:
-					if enemy.position[0] >= player.position[0] - 8 and enemy.position[0] <= player.position[0] + 8:
-						bullet = enemy.randomShoot()
-						if not bullet is None:
-							self.allSprites.add(bullet)
-							self.allEnemyBullets.add(bullet)
-			
 			self.allSprites.draw(self.screen)
 			pygame.display.flip()
+		print(self.playerWins)
 	
 	def quit(self):
 		sys.exit()
