@@ -4,7 +4,7 @@ import random
 class BaseShip(pygame.sprite.Sprite):
 	max_x_pos = None
 	max_y_pos = None
-	def __init__(self, image, maxHealth, lives, location, moveSpeed, weapon, shield = None):
+	def __init__(self, image, maxHealth, location, moveSpeed, weapon):
 		pygame.sprite.Sprite.__init__(self)
 		
 		if BaseShip.max_x_pos is None:
@@ -17,18 +17,14 @@ class BaseShip(pygame.sprite.Sprite):
 		
 		self.health = maxHealth
 		self.maxHealth = maxHealth
-		self.lives = lives
 		self.isKilled = False
 		
 		self.initPosition = location
 		self.position = location
 		self.moveSpeed = moveSpeed
-		self.stunned = False
-		self.slowed = False
 		
 		self.weapon = weapon
 		self.weapon.position = ((self.position[0], self.position[1]))
-		self.shield = shield
 	
 	def move(self, rel):
 		self.position = (self.position[0] + rel[0], self.position[1] + rel[1])
@@ -63,15 +59,11 @@ class BaseShip(pygame.sprite.Sprite):
 			return self.shoot()
 	
 	def canShoot(self):
-		return self.stunned == False and self.weapon.ready
+		return self.weapon.ready
 	
 	def update(self):
 		self.rect.center = self.position
 	
 	def kill(self):
-		self.lives -= 1
-		if self.lives <= 0:
-			self.isKilled = True
-			pygame.sprite.Sprite.kill(self)
-		else:
-			self.health = self.maxHealth
+		self.isKilled = True
+		pygame.sprite.Sprite.kill(self)
