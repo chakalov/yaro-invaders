@@ -12,17 +12,15 @@ class PlayerShip(Ships.BaseShip.BaseShip):
 		self.slowed = False
 		self.shield = shield
 		self.health = maxHealth
-		self.dead = False
 	
 	def canShoot(self):
-		return self.stunned == False and Ships.BaseShip.BaseShip.canShoot(self) and self.dead == False
+		return self.stunned == False and Ships.BaseShip.BaseShip.canShoot(self)
 	
 	def takeDamage(self, damage):
 		self.health -= damage
 		if self.health <= 0:
 			if self.lives <= 0:
 				self.kill()
-				self.dead = True
 			else:
 				self.lives -= 1
 				self.health = self.maxHealth
