@@ -14,6 +14,7 @@ class BaseShip(pygame.sprite.Sprite):
 		
 		self.image = pygame.image.load(image).convert_alpha()
 		self.rect = self.image.get_rect()
+		self.mask = pygame.mask.from_surface(self.image)
 		
 		self.health = maxHealth
 		self.maxHealth = maxHealth
