@@ -9,4 +9,6 @@ class AlienBomb(BaseBullet):
 		if AlienBomb.image is None:
 			AlienBomb.image = pygame.image.load("images/AlienBomb.png").convert_alpha()
 		self.image = AlienBomb.image
+		self.rect = self.image.get_rect()
+		self.mask = pygame.mask.from_surface(self.image)
 	

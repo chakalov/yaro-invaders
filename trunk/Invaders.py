@@ -1,9 +1,10 @@
-import sys, pygame
+import os, sys, pygame
 from Player import Player
 from Levels import Levels
 
 class Invaders:
 	def __init__(self):
+		os.environ["SDL_VIDEO_CENTERED"] = "1"
 		pygame.init()
 		self.setUpDisplay()
 		self.setUpSprites()
