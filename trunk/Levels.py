@@ -21,7 +21,7 @@ class Levels:
 	def loadLevel(self, data):
 		self.locations, self.interval, self.startY = data
 		for location in self.locations:
-			self.allEnemies.add(Ships.BaseShip.BaseShip("images/invader2.png", 50, location, 1.5, Ships.Weapons.BaseWeapon.BaseWeapon((25, -25), 1, 0, 3000, Ships.Weapons.Bullets.AlienBomb.AlienBomb)))
+			self.allEnemies.add(Ships.AlienShips.SimpleShip.SimpleShip("images/invader2.png", 50, location, 1.5, Ships.Weapons.BaseWeapon.BaseWeapon((25, -25), 1, 0, 3000, Ships.Weapons.Bullets.AlienBomb.AlienBomb)))
 	
 	def runPattern(self):
 		for ship in self.allEnemies:

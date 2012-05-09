@@ -1,8 +1,14 @@
-from Ships.Weapons.Bullets.BaseBullet import BaseBullet
+import pygame
 from threading import Timer
 
 class BaseWeapon(object):
+	sound = None
 	def __init__(self, weaponLocation, shootSpeed, reloadTime, maxBullets, Bullet, damage = 10, direction = -1):
+		if BaseWeapon.sound is None:
+			BaseWeapon.sound = pygame.mixer.Sound("sounds/Shoot.wav")
+			BaseWeapon.sound.set_volume(0.3)
+			
+		
 		self.weaponLocation = weaponLocation
 		self.shootSpeed = shootSpeed
 		self.reloadTime = reloadTime
@@ -22,6 +28,7 @@ class BaseWeapon(object):
 			self.shootInterval = Timer(self.shootSpeed + self.reloadTime, self.setReady)
 			self.shootInterval.start()
 			self.bullets = self.bullets - 1
+			self.sound.play()
 			return self.Bullet((location[0] - self.weaponLocation[0], location[1] - self.weaponLocation[1]), (0, 4 * self.direction), self.damage)
 	
 	def setReady(self):

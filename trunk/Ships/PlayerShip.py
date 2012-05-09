@@ -1,10 +1,6 @@
-import pygame
-import random
 import Ships.BaseShip
 
 class PlayerShip(Ships.BaseShip.BaseShip):
-	max_x_pos = None
-	max_y_pos = None
 	def __init__(self, image, maxHealth, lives, location, moveSpeed, weapon, shield = None):
 		Ships.BaseShip.BaseShip.__init__(self, image, maxHealth, location, moveSpeed, weapon)
 		self.lives = lives
@@ -16,11 +12,15 @@ class PlayerShip(Ships.BaseShip.BaseShip):
 	def canShoot(self):
 		return self.stunned == False and Ships.BaseShip.BaseShip.canShoot(self)
 	
-	def takeDamage(self, damage):
-		self.health -= damage
+	def enemyCollide(self):
+		self.health = 0
+		self.kill()
+		self.position = (512, 700)
+
+	def kill(self):
 		if self.health <= 0:
 			if self.lives <= 0:
-				self.kill()
+				super(PlayerShip, self).kill()
 			else:
 				self.lives -= 1
 				self.health = self.maxHealth

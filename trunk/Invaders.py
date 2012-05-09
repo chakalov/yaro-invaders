@@ -1,4 +1,5 @@
 import os, sys, pygame
+from threading import Timer
 from Player import Player
 from Levels import Levels
 
@@ -6,13 +7,18 @@ class Invaders:
 	def __init__(self):
 		os.environ["SDL_VIDEO_CENTERED"] = "1"
 		pygame.init()
+		pygame.mixer.init()
+		
 		self.setUpDisplay()
 		self.setUpSprites()
 		self.setUpLevels()
 		self.setUpPlayers()
+		
+		# setup other stuff
 		self.controls = [{"controller": "mouse", "shoot": 1}]
 		self.buttonsPressed = {"mouse": {1: False}, "keyboard": {}}
 		self.playerWins = False
+		self.enemiesLoaded = False
 	
 	def setUpDisplay(self, width = 1024, height = 768):
 		pygame.mouse.set_visible(False)
@@ -91,12 +97,18 @@ class Invaders:
 	def GameEvents(self):
 		# level checks
 		if self.levels.isFinished():
+			self.enemiesLoaded = False
 			hasNextLevel = self.levels.nextLevel()
 			if hasNextLevel == False:
 				self.running = False
 				self.playerWins = True
 			else:
-				self.allSprites.add(self.allEnemies)
+				Timer(2, self.loadEnemies).start()
+		
+		if len(self.allPlayers) == 0:
+			self.running = False
+			self.playerWins = False
+			return
 		
 		# update sprites and check for collisions
 		self.allSprites.update()
@@ -104,6 +116,12 @@ class Invaders:
 			bullet.checkCollision(self.allEnemies)
 		for bullet in self.allEnemyBullets:
 			bullet.checkCollision([self.players[0].ship])
+		if pygame.sprite.spritecollide(self.players[0].ship, self.allEnemies, False):
+			self.players[0].ship.enemyCollide()
+	
+	def loadEnemies(self):
+		self.allSprites.add(self.allEnemies)
+		self.enemiesLoaded = True
 	
 	def run(self):
 		self.running = True
@@ -112,7 +130,8 @@ class Invaders:
 			
 			# check if events occured and process them
 			self.UserEvents()
-			self.AIEvents()
+			if self.enemiesLoaded:
+				self.AIEvents()
 			self.GameEvents()
 			
 			# draw

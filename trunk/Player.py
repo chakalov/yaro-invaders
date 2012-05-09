@@ -10,3 +10,4 @@ class Player(object):
 	
 	def shoot(self):
 		return self.ship.shoot()
+

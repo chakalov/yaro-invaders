@@ -2,6 +2,8 @@ import pygame
 import random
 
 class BaseShip(pygame.sprite.Sprite):
+	target_hit = None
+	explode = None
 	max_x_pos = None
 	max_y_pos = None
 	def __init__(self, image, maxHealth, location, moveSpeed, weapon):
@@ -11,6 +13,12 @@ class BaseShip(pygame.sprite.Sprite):
 			BaseShip.max_x_pos = pygame.display.get_surface().get_width()
 		if BaseShip.max_y_pos is None:
 			BaseShip.max_y_pos = pygame.display.get_surface().get_height()
+		if BaseShip.explode is None:
+			BaseShip.explode = pygame.mixer.Sound("sounds/Explosion.wav")
+			BaseShip.explode.set_volume(0.4)
+		if BaseShip.target_hit is None:
+			BaseShip.target_hit = pygame.mixer.Sound("sounds/TargetHit.wav")
+			BaseShip.target_hit.set_volume(1)
 		
 		self.image = pygame.image.load(image).convert_alpha()
 		self.rect = self.image.get_rect()
@@ -37,6 +45,7 @@ class BaseShip(pygame.sprite.Sprite):
 			self.moveSpeed = self.moveSpeed * (-1)
 	
 	def takeDamage(self, damage):
+		self.target_hit.play()
 		self.health -= damage
 		if self.health <= 0:
 			self.kill()
@@ -67,4 +76,5 @@ class BaseShip(pygame.sprite.Sprite):
 	
 	def kill(self):
 		self.isKilled = True
+		self.explode.play()
 		pygame.sprite.Sprite.kill(self)
