@@ -3,6 +3,7 @@ import pygame
 class TinyExplosion(pygame.sprite.Sprite):
 	images = None
 	sound = None
+	points = 0.5
 	def __init__(self, location):
 		pygame.sprite.Sprite.__init__(self)
 		self.frame = 0
@@ -11,8 +12,8 @@ class TinyExplosion(pygame.sprite.Sprite):
 			master_image = pygame.image.load('images/tinyExplosion.png').convert_alpha()
 			 
 			master_width, master_height = master_image.get_size()
-			for i in range(int(master_width / 11)):
-				self.images.append(master_image.subsurface((i * 11, 0, 11, 11)))
+			for i in range(int(master_width / 25)):
+				self.images.append(master_image.subsurface((i * 25, 0, 25, 25)))
 		
 		if TinyExplosion.sound is None:
 			TinyExplosion.sound = pygame.mixer.Sound("sounds/TargetHit.wav")

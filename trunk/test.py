@@ -1,2 +1,0 @@
-import Ships
-dir(Ships)
