@@ -44,6 +44,9 @@ class BaseShip(pygame.sprite.Sprite):
 		if self.initPosition[0] - offset > self.position[0] or self.position[0] >= self.initPosition[0] + offset:
 			self.moveSpeed = self.moveSpeed * (-1)
 	
+	def moveDown(self):
+		self.position = (self.position[0], self.position[1] + self.moveSpeed)
+	
 	def takeDamage(self, damage):
 		self.target_hit.play()
 		self.health -= damage

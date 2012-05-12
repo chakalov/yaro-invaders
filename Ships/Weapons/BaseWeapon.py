@@ -6,7 +6,7 @@ class BaseWeapon(object):
 	def __init__(self, weaponLocation, shootSpeed, reloadTime, maxBullets, Bullet, damage = 10, direction = -1):
 		if BaseWeapon.sound is None:
 			BaseWeapon.sound = pygame.mixer.Sound("sounds/Shoot.wav")
-			BaseWeapon.sound.set_volume(0.3)
+			BaseWeapon.sound.set_volume(0.1)
 			
 		
 		self.weaponLocation = weaponLocation

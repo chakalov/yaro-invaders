@@ -5,6 +5,7 @@ class Levels:
 	def __init__(self, allEnemies):
 		self.levelIndex = 0
 		self.allEnemies = allEnemies
+		self.startY = 0
 		
 		levels = open("levels/standart.lvl", "rb")
 		self.levels = pickle.load(levels)
@@ -21,7 +22,15 @@ class Levels:
 	def loadLevel(self, data):
 		self.locations, self.interval, self.startY = data
 		for location in self.locations:
-			self.allEnemies.add(Ships.AlienShips.SimpleShip.SimpleShip("images/invader2.png", 50, location, 1.5, Ships.Weapons.BaseWeapon.BaseWeapon((25, -25), 1, 0, 3000, Ships.Weapons.Bullets.AlienBomb.AlienBomb)))
+			x, y = location
+			self.allEnemies.add(Ships.AlienShips.SimpleShip.SimpleShip("images/invader2.png", 50, (x, y - self.startY), 1.5, Ships.Weapons.BaseWeapon.BaseWeapon((25, -25), 1, 0, 3000, Ships.Weapons.Bullets.AlienBomb.AlienBomb)))
+	
+	def moveDownSlowly(self):
+		if self.startY > 0:
+			for ship in self.allEnemies:
+				ship.moveDown()
+			self.startY -= 1.5
+		return self.startY <= 0
 	
 	def runPattern(self):
 		for ship in self.allEnemies:

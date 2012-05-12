@@ -103,7 +103,8 @@ class Invaders:
 				self.running = False
 				self.playerWins = True
 			else:
-				Timer(2, self.loadEnemies).start()
+				print("LOADED")
+				self.allSprites.add(self.allEnemies)
 		
 		if len(self.allPlayers) == 0:
 			self.running = False
@@ -119,10 +120,6 @@ class Invaders:
 		if pygame.sprite.spritecollide(self.players[0].ship, self.allEnemies, False):
 			self.players[0].ship.enemyCollide()
 	
-	def loadEnemies(self):
-		self.allSprites.add(self.allEnemies)
-		self.enemiesLoaded = True
-	
 	def run(self):
 		self.running = True
 		while self.running:
@@ -132,6 +129,9 @@ class Invaders:
 			self.UserEvents()
 			if self.enemiesLoaded:
 				self.AIEvents()
+			elif len(self.allEnemies) > 0 :
+				self.enemiesLoaded = self.levels.moveDownSlowly()
+				
 			self.GameEvents()
 			
 			# draw
