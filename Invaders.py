@@ -19,12 +19,16 @@ class Invaders:
 		self.buttonsPressed = {"mouse": {1: False}, "keyboard": {}}
 		self.playerWins = False
 		self.enemiesLoaded = False
+		self.pointsPerKill = 1
+		self.score = 0
+		self.bonusPoints = 0
 	
 	def setUpDisplay(self, width = 1024, height = 768):
 		pygame.mouse.set_visible(False)
 		pygame.event.set_grab(True)
 		self.resolution = (width, height)
 		self.screen = pygame.display.set_mode(self.resolution, pygame.DOUBLEBUF and pygame.HWSURFACE and pygame.FULLSCREEN, 32)
+		pygame.display.set_caption('YARO Invaders')
 		self.bg_img = pygame.image.load("images/bg_img.jpg").convert()
 		self.clock = pygame.time.Clock()
 		self.offset = 0
@@ -45,6 +49,7 @@ class Invaders:
 		self.allSprites.add(self.players[0].ship)
 	
 	def drawBackground(self):
+		background = pygame.Surface(self.screen.get_size())
 		img_rect = self.bg_img.get_rect()
 		nrows = int(self.resolution[1] / img_rect.height) + 1
 		ncols = int(self.resolution[0] / img_rect.width) + 1
@@ -61,7 +66,23 @@ class Invaders:
 		for y in range(first_row, last_row):
 			for x in range(ncols):
 				img_rect.topleft = (x * img_rect.width, y * img_rect.height + self.offset)
-				self.screen.blit(self.bg_img, img_rect)
+				background.blit(self.bg_img, img_rect)
+		
+		font = pygame.font.Font(None, 36)
+		font.set_italic(True)
+		text = font.render('Lives: ' + str(self.players[0].ship.lives + 1), True, (255, 255, 255))
+		textpos = text.get_rect()
+		textpos.topleft = background.get_rect().topleft
+		background.blit(text, textpos)
+		
+		font = pygame.font.Font(None, 36)
+		font.set_italic(True)
+		text = font.render('Score: ' + str(self.score), True, (255, 255, 255))
+		textpos = text.get_rect()
+		textpos.topright = background.get_rect().topright
+		background.blit(text, textpos)
+		
+		self.screen.blit(background, (0, 0))
 	
 	def UserEvents(self):
 		for event in pygame.event.get():
@@ -103,7 +124,10 @@ class Invaders:
 				self.running = False
 				self.playerWins = True
 			else:
-				print("LOADED")
+				if self.bonusPoints > 0:
+					self.score += int(self.bonusPoints)
+				self.pointsPerKill = self.levels.getPointsPerKillForCurrentLevel()
+				self.bonusPoints = self.levels.getBonusPointsForCurrentLevel()
 				self.allSprites.add(self.allEnemies)
 		
 		if len(self.allPlayers) == 0:
@@ -117,14 +141,17 @@ class Invaders:
 			explosion = bullet.checkCollision(self.allEnemies)
 			if not explosion is None:
 				self.allSprites.add(explosion)
+				self.score += int(int(explosion.points) * self.pointsPerKill)
 		for bullet in self.allEnemyBullets:
 			explosion = bullet.checkCollision([self.players[0].ship])
 			if not explosion is None:
 				self.allSprites.add(explosion)
+				self.bonusPoints -= explosion.points
 		if pygame.sprite.spritecollide(self.players[0].ship, self.allEnemies, False):
 			explosion = self.players[0].ship.enemyCollide()
 			if not explosion is None:
 				self.allSprites.add(explosion)
+				self.bonusPoints -= explosion.points
 	
 	def run(self):
 		self.running = True

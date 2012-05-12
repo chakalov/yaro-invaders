@@ -12,6 +12,12 @@ class Levels:
 		self.levels = pickle.load(levels)
 		levels.close()
 	
+	def getBonusPointsForCurrentLevel(self):
+		return len(self.levels[self.levelIndex - 1][0] * 5)
+	
+	def getPointsPerKillForCurrentLevel(self):
+		return (self.levelIndex) * 10
+	
 	def nextLevel(self):
 		if self.levelIndex < len(self.levels):
 			self.loadLevel(self.levels[self.levelIndex])

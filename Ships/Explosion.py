@@ -3,6 +3,7 @@ import pygame
 class Explosion(pygame.sprite.Sprite):
 	images = None
 	sound = None
+	points = 1
 	def __init__(self, location):
 		pygame.sprite.Sprite.__init__(self)
 		self.frame = 0

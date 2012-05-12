@@ -35,7 +35,7 @@ class BaseBullet(pygame.sprite.Sprite):
 		dir = 1
 		if self.moveSpeed[1] < 0:
 			dir = -1
-		return target.takeDamage(self.damage, (x + self.moveSpeed[0], y + self.moveSpeed[1] -  dir * (self.image.get_height() / 2 - 5)))
+		return target.takeDamage(self.damage, (x + self.moveSpeed[0], y + self.moveSpeed[1] -  dir * (self.image.get_height() / 2 - 13)))
 	
 	def update(self):
 		self.position = (self.position[0] - self.moveSpeed[0], self.position[1] - self.moveSpeed[1])
