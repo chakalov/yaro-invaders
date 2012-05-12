@@ -114,11 +114,17 @@ class Invaders:
 		# update sprites and check for collisions
 		self.allSprites.update()
 		for bullet in self.allFriendlyBullets:
-			bullet.checkCollision(self.allEnemies)
+			explosion = bullet.checkCollision(self.allEnemies)
+			if not explosion is None:
+				self.allSprites.add(explosion)
 		for bullet in self.allEnemyBullets:
-			bullet.checkCollision([self.players[0].ship])
+			explosion = bullet.checkCollision([self.players[0].ship])
+			if not explosion is None:
+				self.allSprites.add(explosion)
 		if pygame.sprite.spritecollide(self.players[0].ship, self.allEnemies, False):
-			self.players[0].ship.enemyCollide()
+			explosion = self.players[0].ship.enemyCollide()
+			if not explosion is None:
+				self.allSprites.add(explosion)
 	
 	def run(self):
 		self.running = True

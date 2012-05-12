@@ -1,5 +1,6 @@
 import pickle
 import Ships
+import random
 
 class Levels:
 	def __init__(self, allEnemies):
@@ -23,7 +24,7 @@ class Levels:
 		self.locations, self.interval, self.startY = data
 		for location in self.locations:
 			x, y = location
-			self.allEnemies.add(Ships.AlienShips.SimpleShip.SimpleShip("images/invader2.png", 50, (x, y - self.startY), 1.5, Ships.Weapons.BaseWeapon.BaseWeapon((25, -25), 1, 0, 3000, Ships.Weapons.Bullets.AlienBomb.AlienBomb)))
+			self.allEnemies.add(Ships.AlienShips.SimpleShip.SimpleShip(random.choice(["images/invader2.png", "images/invader2a.png", "images/invader3.png"]), 50, (x, y - self.startY), 1.5, Ships.Weapons.BaseWeapon.BaseWeapon((25, -25), 1, 0, 3000, Ships.Weapons.Bullets.AlienBomb.AlienBomb)))
 	
 	def moveDownSlowly(self):
 		if self.startY > 0:

@@ -27,12 +27,15 @@ class BaseBullet(pygame.sprite.Sprite):
 	def checkCollision(self, targets):
 		for target in targets:
 			if pygame.sprite.collide_mask(self, target):
-				if self.hitTarget(target):
-					return target
+				return self.hitTarget(target)
 	
 	def hitTarget(self, target):
-		target.takeDamage(self.damage)
 		self.kill()
+		x, y = self.position
+		dir = 1
+		if self.moveSpeed[1] < 0:
+			dir = -1
+		return target.takeDamage(self.damage, (x + self.moveSpeed[0], y + self.moveSpeed[1] -  dir * (self.image.get_height() / 2 - 5)))
 	
 	def update(self):
 		self.position = (self.position[0] - self.moveSpeed[0], self.position[1] - self.moveSpeed[1])

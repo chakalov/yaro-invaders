@@ -14,13 +14,15 @@ class PlayerShip(Ships.BaseShip.BaseShip):
 	
 	def enemyCollide(self):
 		self.health = 0
-		self.kill()
-		self.position = (512, 700)
+		return self.kill()
 
 	def kill(self):
 		if self.health <= 0:
 			if self.lives <= 0:
-				super(PlayerShip, self).kill()
+				return super(PlayerShip, self).kill()
 			else:
 				self.lives -= 1
 				self.health = self.maxHealth
+				explosion = self.explode()
+				self.position = (512, 700)
+				return explosion
