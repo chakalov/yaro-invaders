@@ -98,12 +98,31 @@ class Invaders:
 				elif event.type == pygame.KEYDOWN:
 					if event.key == pygame.K_ESCAPE:
 						self.quit()
+					else:
+						self.buttonsPressed["keyboard"][event.key] = True
+				elif event.type == pygame.KEYUP:
+					self.buttonsPressed["keyboard"][event.key] = False
 		
-		if self.buttonsPressed["mouse"][self.controls[0]["shoot"]]:
+		if self.buttonsPressed["mouse"][self.controls[0]["shoot"]] or (pygame.K_SPACE in self.buttonsPressed["keyboard"] and self.buttonsPressed["keyboard"][pygame.K_SPACE]):
 			bullet = self.players[0].shoot()
 			if not bullet is None:
 				self.allSprites.add(bullet)
 				self.allFriendlyBullets.add(bullet)
+		
+		# for keyboard
+		coord_x, coord_y = (0, 0)
+		if pygame.K_UP in self.buttonsPressed["keyboard"] and self.buttonsPressed["keyboard"][pygame.K_UP]:
+			coord_y -= 5
+		if pygame.K_DOWN in self.buttonsPressed["keyboard"] and self.buttonsPressed["keyboard"][pygame.K_DOWN]:
+			coord_y += 5
+		if pygame.K_LEFT in self.buttonsPressed["keyboard"] and self.buttonsPressed["keyboard"][pygame.K_LEFT]:
+			coord_x -= 5
+		if pygame.K_RIGHT in self.buttonsPressed["keyboard"] and self.buttonsPressed["keyboard"][pygame.K_RIGHT]:
+			coord_x += 5
+		
+		if coord_x != 0 or coord_y != 0:
+			self.players[0].move((coord_x, coord_y))
+		
 	
 	def AIEvents(self):
 		self.levels.runPattern()
