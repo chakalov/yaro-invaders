@@ -1,2 +1,2 @@
-C:\python32\python invaders.py
+C:\python32\python MainMenu.py
 pause
