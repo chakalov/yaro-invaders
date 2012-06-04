@@ -11,6 +11,7 @@ class MainMenu:
 	
 	def setUpDisplay(self, width = 713, height = 400):
 		pygame.mouse.set_visible(True)
+		pygame.event.set_grab(False)
 		self.resolution = (width, height)
 		self.screen = pygame.display.set_mode(self.resolution, pygame.DOUBLEBUF and pygame.HWSURFACE, 32)
 		pygame.display.set_caption('YARO Invaders')
@@ -54,7 +55,6 @@ class MainMenu:
 			self.screen.blit(self.bg_img, (0, 0))
 			self.labels.draw(self.screen)
 			pygame.display.flip()
-		#Invaders().run()
 	
 	def quit(self):
 		self.running = False

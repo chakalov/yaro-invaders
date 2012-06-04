@@ -1,2 +1,2 @@
-C:\python32\python setup.py build
+C:\python27\python setup.py
 pause

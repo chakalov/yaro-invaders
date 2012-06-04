@@ -1,2 +1,2 @@
-C:\python32\python MainMenu.py
+C:\python27\python MainMenu.py
 pause
