@@ -1,6 +1,6 @@
 import pickle
 
-lvl_file = open("new.lvl", "wb")
+lvl_file = open("standart.lvl", "wb")
 
 lvls = [([(212, 100), (412, 100), (612, 100), (812, 100),
 		  (112, 200), (312, 200), (512, 200), (712, 200), (912, 200),

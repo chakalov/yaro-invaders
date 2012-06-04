@@ -4,7 +4,7 @@ class Label(pygame.sprite.Sprite):
 	def __init__(self, label, location, action):
 		pygame.sprite.Sprite.__init__(self)
 		
-		self.font = pygame.font.Font(None, 36)
+		self.font = pygame.font.Font(pygame.font.get_default_font(), 36)
 		self.font.set_italic(True)
 		self.text = label
 		self.position = location

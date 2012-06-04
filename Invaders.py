@@ -68,14 +68,14 @@ class Invaders:
 				img_rect.topleft = (x * img_rect.width, y * img_rect.height + self.offset)
 				background.blit(self.bg_img, img_rect)
 		
-		font = pygame.font.Font(None, 36)
+		font = pygame.font.Font(pygame.font.get_default_font(), 36)
 		font.set_italic(True)
 		text = font.render('Lives: ' + str(self.players[0].ship.lives + 1), True, (255, 255, 255))
 		textpos = text.get_rect()
 		textpos.topleft = background.get_rect().topleft
 		background.blit(text, textpos)
 		
-		font = pygame.font.Font(None, 36)
+		font = pygame.font.Font(pygame.font.get_default_font(), 36)
 		font.set_italic(True)
 		text = font.render('Score: ' + str(self.score), True, (255, 255, 255))
 		textpos = text.get_rect()
